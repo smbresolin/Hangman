@@ -1,0 +1,85 @@
+# Scheila Bresolin - RA 1133814 #
+from funcoesJogo import limparTela, jogoDaForca, jogarNovamente
+
+limparTela()
+print("****BEM-VINDO AO JOGO DA FORCA****")
+desafiante = input("Digite o nome do desafiante: ").upper()
+competidor = input("Digite o nome do competidor: ").upper()
+limparTela()
+
+palavraChave = input("Desafiante, escolha a palavra secreta: ").upper()
+limparTela()
+chave = len(palavraChave) * "*"
+dica1 = input("Desafiante, digite aqui a dica 1: ").upper()
+dica2 = input("Desafiante, digite aqui a dica 2: ").upper()
+dica3 = input("Desafiante, digite aqui a dica 3: ").upper()
+dicas = [dica1, dica2, dica3]
+dicasIndex = 0
+errosIndex = 0
+
+while True: 
+    limparTela()
+    print("Competidor, aqui está a palavra secreta:", chave)
+    opcoes = input("Competidor, infome sua escolha: \n(1) Tentar uma letra\n(2) Obter uma dica\n")
+    if opcoes == "1":
+        palpite = input("Informe uma letra de A a Z sem acentos: ").upper()
+        if len(palpite) > 1:
+            print("Digite somente uma letra!")
+            continue
+        chave = list(chave)
+        posicao = 0
+        errou = True
+        for letra in palavraChave:
+            if letra == palpite:
+                errou = False
+                chave[posicao] = letra
+            posicao = posicao + 1
+        chave = "".join(chave)
+        if palavraChave == chave:
+            limparTela()
+            print("Parabéns! Você fugiu da forca, descobriu a palavra secreta e venceu o jogo!")
+            input()
+            break
+        if errou:
+            print("A letra informada não faz parte da palavra! Tente novamente! Você perdeu uma vida!")
+            input()
+            errosIndex += 1
+            if errosIndex == 6:
+                print("Você foi enforcado e perdeu o jogo! A palavra secreta era: ",palavraChave)
+                input()
+                break
+    elif opcoes == "2":
+        if dicasIndex <= 2:
+            print("A dica é:", dicas[dicasIndex])
+            input()
+            dicasIndex = dicasIndex + 1
+        else:
+            print("Você não possui mais dicas!")
+            input()
+            break
+    else:
+        print("Opção inválida!")
+        break
+limparTela()
+perguntaFinal = input("Quem venceu a partida?\n(1) Competidor\n(2) Desafiante\n")
+if perguntaFinal == "1":
+    vencedor = "Competidor", competidor
+    perdedor = "Desafiante", desafiante
+elif perguntaFinal == "2":
+    perdedor = "Competidor", competidor
+    vencedor = "Desafiante", desafiante
+limparTela()
+dados = "A palavra chave da partida foi:",palavraChave,"O vencedor foi:",vencedor,"O perdedor foi:",perdedor
+historico = str(dados)
+
+try:
+    file = open("historicoPartidas.txt", "w")
+    file.write("Historico de Partidas: ")
+    file.write(historico)
+    file.close()
+except:
+    file = open("historicoPartidas.txt","r")
+    file.readlines()
+    file.close()
+
+jogarNovamente()
